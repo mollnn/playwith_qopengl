@@ -1,0 +1,5 @@
+.vscode
+qopengl_demo_x
+*.stash
+*.o
+moc*
