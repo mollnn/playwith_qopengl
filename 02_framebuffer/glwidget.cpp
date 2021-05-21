@@ -34,6 +34,9 @@ void GlWidget::initializeGL()
     pTextureSource->create();
     pTextureSource->setData(QImage("texture.jpg"));
 
+    width = QImage("texture.jpg").width();
+    height = QImage("texture.jpg").height();
+
     // create old buffer texture
     pTextureOld = new QOpenGLTexture(QOpenGLTexture::Target2D);
     pTextureOld->create();
@@ -86,6 +89,7 @@ void GlWidget::resizeGL(int w, int h)
 
 void GlWidget::paintGL()
 {
+    qDebug() << "paint GL";
     // clear
     this->glClearColor(0.1, 0.5, 0.7, 1.0);
     this->glClear(GL_COLOR_BUFFER_BIT);
@@ -95,7 +99,6 @@ void GlWidget::paintGL()
 
     // do texture copy
     int w0 = 2;
-    CopyFromFramebufferToTexture(fboSource, pTextureResult->textureId(), 0, 0, 0, 0, width, height);
 
     CopyFromFramebufferToTexture(fboResult, pTextureOld->textureId(), 0, 0, 0, 0, width, height);
     CopyFromFramebufferToTexture(fboOld, pTextureResult->textureId(), 0, 0, w0 - 1, 0, width - w0 + 1, height);
@@ -108,4 +111,6 @@ void GlWidget::paintGL()
     // bind vao and draw
     QOpenGLVertexArrayObject::Binder{&m_vaoVertexArrayObject};
     this->glDrawArrays(GL_POLYGON, 0, 4);
+
+    this->update();
 }

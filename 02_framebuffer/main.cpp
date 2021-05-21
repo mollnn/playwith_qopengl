@@ -24,6 +24,8 @@ int main(int argc, char *argv[])
 
     pWindow->setLayout(pGridLayout);
 
+    
+
     pWindow->show();
 
     return a.exec();
