@@ -1,5 +1,7 @@
 #include "glwidget.h"
 
+#include <QSurfaceFormat>
+
 GlWidget::GlWidget(QWidget *parent)
     : QOpenGLWidget(parent)
 {
@@ -27,7 +29,12 @@ void GlWidget::CopyFromFramebufferToTexture(GLuint fboSrc, GLuint texDest, int x
 
 void GlWidget::initializeGL()
 {
-    this->initializeOpenGLFunctions(); // 初始化opengl函数
+    this->initializeOpenGLFunctions(); // init opengl
+
+    // vsync
+    QSurfaceFormat surfaceFormat;
+    surfaceFormat.setSwapInterval(10);
+    QSurfaceFormat::setDefaultFormat(surfaceFormat);
 
     // create and load source texture
     pTextureSource = new QOpenGLTexture(QOpenGLTexture::Target2D);
