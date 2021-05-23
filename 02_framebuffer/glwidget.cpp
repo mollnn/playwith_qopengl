@@ -89,7 +89,7 @@ void GlWidget::resizeGL(int w, int h)
 
 void GlWidget::paintGL()
 {
-    qDebug() << "paint GL";
+//    qDebug() << "paint GL";
     // clear
     this->glClearColor(0.1, 0.5, 0.7, 1.0);
     this->glClear(GL_COLOR_BUFFER_BIT);
@@ -98,7 +98,7 @@ void GlWidget::paintGL()
     m_shaderTextureShader.bind();
 
     // do texture copy
-    int w0 = 2;
+    int w0 = 3;
 
     CopyFromFramebufferToTexture(fboResult, pTextureOld->textureId(), 0, 0, 0, 0, width, height);
     CopyFromFramebufferToTexture(fboOld, pTextureResult->textureId(), 0, 0, w0 - 1, 0, width - w0 + 1, height);
