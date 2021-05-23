@@ -9,22 +9,15 @@ int main(int argc, char *argv[])
 
     QWidget *pWindow = new QWidget;
 
-    QTextEdit *pTextEdit = new QTextEdit;
-
     GlWidget *pGlWidget = new GlWidget;
-
-    pGlWidget->setFixedHeight(720);
-
-    pWindow->setFixedSize(1366, 768);
 
     QGridLayout *pGridLayout = new QGridLayout;
 
     pGridLayout->addWidget(pGlWidget, 0, 0, 2, 2);
-    pGridLayout->addWidget(pTextEdit, 3, 0, 1, 2);
 
     pWindow->setLayout(pGridLayout);
 
-    
+    pWindow->setSizeIncrement(100,100);
 
     pWindow->show();
 

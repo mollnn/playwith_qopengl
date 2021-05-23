@@ -24,7 +24,10 @@ private:
     QOpenGLTexture *pTextureOld;
     QOpenGLTexture *pTextureResult;
     QOpenGLTexture *pTextureSource;
+    QOpenGLTexture *pTextureSource2;
+
     GLuint fboSource;
+    GLuint fboSource2;
     GLuint fboOld;
     GLuint fboResult;
     QOpenGLFunctions glFunctions;

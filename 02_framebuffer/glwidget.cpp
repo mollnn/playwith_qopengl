@@ -34,24 +34,36 @@ void GlWidget::initializeGL()
     pTextureSource->create();
     pTextureSource->setData(QImage("texture.jpg"));
 
+    pTextureSource2 = new QOpenGLTexture(QOpenGLTexture::Target2D);
+    pTextureSource2->create();
+    pTextureSource2->setData(QImage("texture2.jpg"));
+
     width = QImage("texture.jpg").width();
     height = QImage("texture.jpg").height();
+
+    QImage nullImage(width,height,QImage::Format_RGBA8888);
+    nullImage.fill(0);
 
     // create old buffer texture
     pTextureOld = new QOpenGLTexture(QOpenGLTexture::Target2D);
     pTextureOld->create();
-    pTextureOld->setData(QImage("texture2.jpg"));
+    pTextureOld->setData(nullImage);
 
     // create result buffer texture
     pTextureResult = new QOpenGLTexture(QOpenGLTexture::Target2D);
     pTextureResult->create();
-    pTextureResult->setData(QImage("texture2.jpg"));
+    pTextureResult->setData(nullImage);
 
     // create framebuffer for textures
 
     glGenFramebuffers(1, &fboSource);
     glBindFramebuffer(GL_FRAMEBUFFER, fboSource);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pTextureSource->textureId(), 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    glGenFramebuffers(1, &fboSource2);
+    glBindFramebuffer(GL_FRAMEBUFFER, fboSource2);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pTextureSource2->textureId(), 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glGenFramebuffers(1, &fboOld);
@@ -98,11 +110,11 @@ void GlWidget::paintGL()
     m_shaderTextureShader.bind();
 
     // do texture copy
-    int w0 = 3;
+    int w0 = 10;
 
     CopyFromFramebufferToTexture(fboResult, pTextureOld->textureId(), 0, 0, 0, 0, width, height);
-    CopyFromFramebufferToTexture(fboOld, pTextureResult->textureId(), 0, 0, w0 - 1, 0, width - w0 + 1, height);
-    CopyFromFramebufferToTexture(fboSource, pTextureResult->textureId(), width - w0, 0, 0, 0, w0, height);
+    CopyFromFramebufferToTexture(fboOld, pTextureResult->textureId(), 0, 0, w0, 0, width - w0, height);
+    CopyFromFramebufferToTexture(rand() % 3 ? fboSource: fboSource2, pTextureResult->textureId(), width - w0, 0, 0, 0, w0, height);
 
     // bind texture and connect to texture unit
     pTextureResult->bind(0);
