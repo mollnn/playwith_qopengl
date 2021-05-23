@@ -7,10 +7,10 @@ GlWidget::GlWidget(QWidget *parent)
 {
     vertices = {
         // 位置                  //纹理坐标
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // 右下
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // 左下
-        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,  // 左下
-        0.5f, 0.5f, 0.0f, 1.0f, 1.0f,   // 右上
+        1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // 右下
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, // 左下
+        -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,  // 左下
+        1.0f, 1.0f, 0.0f, 1.0f, 1.0f,   // 右上
     };
 }
 
@@ -31,10 +31,6 @@ void GlWidget::initializeGL()
 {
     this->initializeOpenGLFunctions(); // init opengl
 
-    // vsync
-    QSurfaceFormat surfaceFormat;
-    surfaceFormat.setSwapInterval(10);
-    QSurfaceFormat::setDefaultFormat(surfaceFormat);
 
     // create and load source texture
     pTextureSource = new QOpenGLTexture(QOpenGLTexture::Target2D);
@@ -62,7 +58,6 @@ void GlWidget::initializeGL()
     pTextureResult->setData(nullImage);
 
     // create framebuffer for textures
-
     glGenFramebuffers(1, &fboSource);
     glBindFramebuffer(GL_FRAMEBUFFER, fboSource);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pTextureSource->textureId(), 0);
@@ -110,15 +105,13 @@ void GlWidget::paintGL()
 {
 //    qDebug() << "paint GL";
     // clear
-    this->glClearColor(0.1, 0.5, 0.7, 1.0);
+    this->glClearColor(1.0,1.0,1.0,1.0);
     this->glClear(GL_COLOR_BUFFER_BIT);
 
     // bind shader
     m_shaderTextureShader.bind();
 
     // do texture copy
-    int w0 = 10;
-
     CopyFromFramebufferToTexture(fboResult, pTextureOld->textureId(), 0, 0, 0, 0, width, height);
     CopyFromFramebufferToTexture(fboOld, pTextureResult->textureId(), 0, 0, w0, 0, width - w0, height);
     CopyFromFramebufferToTexture(rand() % 3 ? fboSource: fboSource2, pTextureResult->textureId(), width - w0, 0, 0, 0, w0, height);
@@ -132,4 +125,9 @@ void GlWidget::paintGL()
     this->glDrawArrays(GL_POLYGON, 0, 4);
 
     this->update();
+}
+
+void GlWidget::setDeltaWidth(int param)
+{
+    w0=param;
 }

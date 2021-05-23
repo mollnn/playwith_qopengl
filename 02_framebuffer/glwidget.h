@@ -32,13 +32,17 @@ private:
     GLuint fboResult;
     QOpenGLFunctions glFunctions;
     int width,height;
+    int w0=1;
 
     void CopyFromFramebufferToTexture(GLuint fboSrc, GLuint texDest, int xo, int yo, int x, int y, int w, int h);
 
 public:
     GlWidget(QWidget *parent = 0);
     ~GlWidget();
+    void setDeltaWidth(int param);
+
 protected:
+
     virtual void initializeGL() override;
     virtual void resizeGL(int w,int h) override;
     virtual void paintGL() override;
