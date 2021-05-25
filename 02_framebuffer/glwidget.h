@@ -11,6 +11,7 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLExtraFunctions>
 #include <QOpenGLTexture>
+#include <QDateTime>
 
 class GlWidget : public QOpenGLWidget,public QOpenGLExtraFunctions
 {
@@ -33,6 +34,8 @@ private:
     QOpenGLFunctions glFunctions;
     int width,height;
     int w0=1;
+    int cnt=0;
+    QDateTime dateTimeStart;
 
     void CopyFromFramebufferToTexture(GLuint fboSrc, GLuint texDest, int xo, int yo, int x, int y, int w, int h);
 

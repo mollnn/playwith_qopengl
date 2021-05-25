@@ -1,6 +1,7 @@
 #include "glwidget.h"
 
 #include <QSurfaceFormat>
+#include <QFile>
 
 GlWidget::GlWidget(QWidget *parent)
     : QOpenGLWidget(parent)
@@ -31,18 +32,23 @@ void GlWidget::initializeGL()
 {
     this->initializeOpenGLFunctions(); // init opengl
 
+    dateTimeStart=QDateTime::currentDateTime();
+
+    // load texture
+    QImage img("texture.jpg");
+    QImage img2("texture2.jpg");
 
     // create and load source texture
     pTextureSource = new QOpenGLTexture(QOpenGLTexture::Target2D);
     pTextureSource->create();
-    pTextureSource->setData(QImage("texture.jpg"));
+    pTextureSource->setData(img.mirrored());
 
     pTextureSource2 = new QOpenGLTexture(QOpenGLTexture::Target2D);
     pTextureSource2->create();
-    pTextureSource2->setData(QImage("texture2.jpg"));
+    pTextureSource2->setData(img2.mirrored());
 
-    width = QImage("texture.jpg").width();
-    height = QImage("texture.jpg").height();
+    width = img.width();
+    height = img.height();
 
     QImage nullImage(width,height,QImage::Format_RGBA8888);
     nullImage.fill(0);
@@ -103,7 +109,7 @@ void GlWidget::resizeGL(int w, int h)
 
 void GlWidget::paintGL()
 {
-//    qDebug() << "paint GL";
+    //    qDebug() << "paint GL";main
     // clear
     this->glClearColor(1.0,1.0,1.0,1.0);
     this->glClear(GL_COLOR_BUFFER_BIT);
@@ -112,9 +118,12 @@ void GlWidget::paintGL()
     m_shaderTextureShader.bind();
 
     // do texture copy
-    CopyFromFramebufferToTexture(fboResult, pTextureOld->textureId(), 0, 0, 0, 0, width, height);
-    CopyFromFramebufferToTexture(fboOld, pTextureResult->textureId(), 0, 0, w0, 0, width - w0, height);
-    CopyFromFramebufferToTexture(rand() % 3 ? fboSource: fboSource2, pTextureResult->textureId(), width - w0, 0, 0, 0, w0, height);
+    for(int i=1;i<=1;i++)
+    {
+        CopyFromFramebufferToTexture(fboResult, pTextureOld->textureId(), 0, 0, 0, 0, width, height);
+        CopyFromFramebufferToTexture(fboOld, pTextureResult->textureId(), 0, 0, w0, 0, width - w0, height);
+        CopyFromFramebufferToTexture(rand() % 2 ? fboSource2: fboSource, pTextureResult->textureId(), width - w0, 0, 0, 0, w0, height);
+    }
 
     // bind texture and connect to texture unit
     pTextureResult->bind(0);
@@ -125,6 +134,13 @@ void GlWidget::paintGL()
     this->glDrawArrays(GL_POLYGON, 0, 4);
 
     this->update();
+
+    ++cnt;
+    if(cnt%100==0)
+    {
+        qDebug()<<1000*cnt/this->dateTimeStart.msecsTo(QDateTime::currentDateTime());
+    }
+
 }
 
 void GlWidget::setDeltaWidth(int param)

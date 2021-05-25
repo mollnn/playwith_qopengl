@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    SetVSync(1); // vsync demo: modify the param here
+    SetVSync(1); // vsync demo: modify the param here (0-no sync, k-refresh per k vsignal)
 
     QWidget *pWindow = new QWidget;
 
@@ -36,9 +36,7 @@ int main(int argc, char *argv[])
 
     pWindow->setLayout(pGridLayout);
 
-    pGlWidget->setMinimumHeight(400);
-
-    pWindow->resize(1600,900);
+    pGlWidget->setFixedSize(1920,1200);
 
     QObject::connect(pctlDeltaWidth, &QSlider::valueChanged, [&](){
         pGlWidget->setDeltaWidth(pctlDeltaWidth->value());
